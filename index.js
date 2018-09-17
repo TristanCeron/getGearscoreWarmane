@@ -224,7 +224,7 @@ http.createServer(async function (req, res) {
   if (pathname == "/"){
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     var response = await getAsync("roster");
-    res.write(JSON.stringify(response));
+    res.write(response);
     res.end();
 
   }else{
