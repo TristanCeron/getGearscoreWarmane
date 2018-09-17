@@ -218,7 +218,7 @@ new CronJob('10 0-23/6 * * *', function () {
 }, null, true, 'Europe/Paris');
 
 
-/*** hhtp server to handle requests from gsheet */
+/*** http server to handle requests from gsheet */
 http.createServer(async function (req, res) {
   var pathname = url.parse(req.url).pathname;
   if (pathname == "/"){
@@ -231,7 +231,7 @@ http.createServer(async function (req, res) {
     console.log("Request for " + pathname.split("/").slice(1) + " received.");
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     var nom = pathname.split("/").slice(1);
-    await setTimeout(function () {
+    await setTimeout(async function () {
       var response = await getAsync(nom);
       if (response != null){
         res.write(response);
