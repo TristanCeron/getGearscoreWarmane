@@ -227,7 +227,7 @@ http.createServer(async function (req, res) {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     
     client.get("roster", function(err, reply) {
-      res.write(toString(reply));
+      res.write(JSON.stringify(reply));
       res.end();
       console.log(reply);
     });
