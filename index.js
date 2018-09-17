@@ -117,7 +117,7 @@ var getCharInfo = async function (name, callback) {
 
           await getItemGearscore(item.item, (response.data.talents.findIndex(i => i.tree === "Fury") >= 0), function (data) {
             //console.log(data);
-            gearscore += data;
+            gearscore += parseInt(data);
             callback();
           });
         }, 1);
