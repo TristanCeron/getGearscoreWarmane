@@ -13,11 +13,14 @@ const port = process.env.PORT || 5000;
 const guild = process.env.GUILD || "Utopie";
 const server = process.env.SERVER || "Lordaeron";
 
+var client = redis.createClient(process.env.REDIS_URL);
+const {promisify} = require('util');
+const getAsync = promisify(client.get).bind(client);
 
 /**
 *   Global variable used in Gearscore calculations
 **/
-var client = redis.createClient(process.env.REDIS_URL);
+
 
 var scale = 1.8618;
 
@@ -41,12 +44,7 @@ var lastcall = 0;
 
 /*** Returns the gearscore of a given item piece */
 var getItemGearscore = async function (item, isFury, callback) {
-  var cachedGS;
-
-  await client.get(toString(item), function(err, reply) {
-    console.log(reply);
-    cachedGS = reply;
-  });
+  var cachedGS = await getAsync(item);
   
   if (cachedGS != undefined && isFury == false) {
     //console.log("gs cached")
@@ -225,13 +223,10 @@ http.createServer(async function (req, res) {
   var pathname = url.parse(req.url).pathname;
   if (pathname == "/"){
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    
-    client.get("roster", function(err, reply) {
-      res.write(JSON.stringify(reply));
-      res.end();
-      console.log(reply);
-    });
-    
+    var response = await getAsync("roster");
+    res.write(JSON.stringify(response));
+    res.end();
+
   }else{
     console.log("Request for " + pathname.split("/").slice(1) + " received.");
     res.writeHead(200, { 'Content-Type': 'text/plain' });
