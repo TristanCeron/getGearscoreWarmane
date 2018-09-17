@@ -238,7 +238,8 @@ http.createServer(async function (req, res) {
         res.end();
       }else{
         getCharInfo(nom, function (data) {
-          client.set(nom, JSON.stringify(data),"EX",3600);
+          client.set(nom, JSON.stringify(data));
+          client.expire(nom, 3600);
           res.write(JSON.stringify(data));
           res.end();
          
