@@ -39,7 +39,7 @@ var GS_Formula_B = [
 
 var slotWeight = [0, 1, 0.5625, 0.75, 0, 1, 0.75, 1, 0.75, 0.5625, 0.75, 0.5625, 0.5625, 0, 0, 0.3164, 0.5625, 2, 0.3164];
 
-
+var loading = false;
 var lastcall = 0;
 
 /*** Returns the gearscore of a given item piece */
@@ -187,7 +187,7 @@ var getRoster = async function (callback) {
         setTimeout(function () {
           /*** Call to get each member's informations */
           getCharInfo(item.name, function (data) {
-            console.log(data);
+            //console.log(data);
             tab.push(data);
             callback();
           });
@@ -205,15 +205,19 @@ var getRoster = async function (callback) {
 
 /*** Roster initialization */
 var start = Date.now();
+loading = true;
 getRoster(function (tab) {
   client.set("roster", JSON.stringify(tab));
+  loading = false;
   console.log("Parsing ended in : " + (Date.now()-start));
 });
 
 /*** The guild roster is updated every 6 hours */
 new CronJob('10 0-23/6 * * *', function () {
+  loading = true;
   getRoster(function (tab) {
    client.set("roster", JSON.stringify(tab));
+   loading = false;
   });
 }, null, true, 'Europe/Paris');
 
@@ -221,28 +225,33 @@ new CronJob('10 0-23/6 * * *', function () {
 /*** http server to handle requests from gsheet */
 http.createServer(async function (req, res) {
   var pathname = url.parse(req.url).pathname;
+  var nom = pathname.split("/").slice(1);
+
   if (pathname == "/"){
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     var response = await getAsync("roster");
     res.write(response);
     res.end();
-
+  }else if (nom == "favicon.ico"){
+    console.log("******************favicon request")
+    res.end()
+  }else if (loading == true){
+    res.write("Please wait, i can't do unitary gs calculations while roster is loading due to warmane servers limitations ");
+    res.end();
   }else{
-    console.log("Request for " + pathname.split("/").slice(1) + " received.");
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    var nom = pathname.split("/").slice(1);
+    console.log("Request for " + nom + " received.");
     await setTimeout(async function () {
       var response = await getAsync(nom);
+      console.log(response);
       if (response != null){
         res.write(response);
         res.end();
       }else{
-        getCharInfo(nom, function (data) {
+        await getCharInfo(nom, function (data) {
           client.set(nom, JSON.stringify(data));
           client.expire(nom, 3600);
           res.write(JSON.stringify(data));
           res.end();
-         
         });
       }
     }, 4000);
