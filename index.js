@@ -236,7 +236,7 @@ http.createServer(async function (req, res) {
     console.log("******************favicon request")
     res.end()
   }else if (loading == true){
-    res.write("Please wait, i can't do unitary gs calculations while roster is loading due to warmane servers limitations ");
+    res.write(JSON.stringify("Please wait, i can't do unitary gs calculations while roster is loading due to warmane servers limitations "));
     res.end();
   }else{
     console.log("Request for " + nom + " received.");
