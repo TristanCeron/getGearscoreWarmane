@@ -46,7 +46,7 @@ var lastcall = 0;
 var getItemGearscore = async function (item, isFury, callback) {
   var cachedGS = await getAsync(item);
   
-  if (cachedGS != undefined && isFury == false) {
+  if (cachedGS != null && isFury == false) {
     //console.log("gs cached")
     callback(cachedGS);
   } else {
@@ -230,12 +230,20 @@ http.createServer(async function (req, res) {
   }else{
     console.log("Request for " + pathname.split("/").slice(1) + " received.");
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    
+    var nom = pathname.split("/").slice(1);
     await setTimeout(function () {
-      getCharInfo(pathname.split("/").slice(1), function (data) {
-        res.write(JSON.stringify(data));
-        res.end(); 
-      });
+      var response = await getAsync(nom);
+      if (response != null){
+        res.write(response);
+        res.end();
+      }else{
+        getCharInfo(nom, function (data) {
+          client.set(nom, JSON.stringify(data),"EX",3600);
+          res.write(JSON.stringify(data));
+          res.end();
+         
+        });
+      }
     }, 4000);
   }
   
