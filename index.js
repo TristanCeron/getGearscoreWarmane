@@ -204,16 +204,19 @@ var getRoster = async function (callback) {
 }
 
 /*** Roster initialization */
-var start = Date.now();
-loading = true;
-getRoster(function (tab) {
-  client.set("roster", JSON.stringify(tab));
-  loading = false;
-  console.log("Parsing ended in : " + (Date.now()-start));
+client.get("roster", function (err, reply) {
+    if (reply == null){
+      loading = true;
+      getRoster(function (tab) {
+        client.set("roster", JSON.stringify(tab));
+        loading = false;
+      });
+    }
 });
 
+
 /*** The guild roster is updated every 6 hours */
-new CronJob('10 0-23/6 * * *', function () {
+new CronJob('01 0-23/6 * * *', function () {
   loading = true;
   getRoster(function (tab) {
    client.set("roster", JSON.stringify(tab));
