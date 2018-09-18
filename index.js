@@ -222,7 +222,7 @@ new CronJob('01 0-23/6 * * *', function () {
    client.set("roster", JSON.stringify(tab));
    loading = false;
   });
-}, null, true, 'Europe/Paris');
+}, null, true, 'UTC');
 
 
 /*** http server to handle requests from gsheet */
