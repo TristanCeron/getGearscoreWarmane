@@ -244,20 +244,11 @@ http.createServer(async function (req, res) {
   }else{
     console.log("Request for " + nom + " received.");
     await setTimeout(async function () {
-      var response = await getAsync(nom);
-      console.log(response);
-      if (response != null){
-        res.write(response);
+      await getCharInfo(nom, function (data) {
+        res.write(JSON.stringify(data));
         res.end();
-      }else{
-        await getCharInfo(nom, function (data) {
-          client.set(nom, JSON.stringify(data));
-          client.expire(nom, 3600);
-          res.write(JSON.stringify(data));
-          res.end();
-        });
-      }
-    }, 4000);
+      });
+    }, 3000);
   }
   
 }).listen(port);
