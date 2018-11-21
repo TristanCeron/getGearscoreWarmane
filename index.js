@@ -205,7 +205,7 @@ var getRoster = async function (callback) {
     });
 }
 
-/*** Roster initialization 
+/*** Roster initialization */
 client.get("roster", function (err, reply) {
     if (reply == null){
       loading = true;
@@ -214,7 +214,7 @@ client.get("roster", function (err, reply) {
         loading = false;
       });
     }
-});*/
+});
 
 
 /*** The guild roster is updated every 6 hours */
