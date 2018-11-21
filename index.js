@@ -218,7 +218,7 @@ client.get("roster", function (err, reply) {
 
 
 /*** The guild roster is updated every 6 hours */
-new CronJob('01 0-23/4 * * *', function () {
+new CronJob('01 0-23/6 * * *', function () {
   loading = true;
   getRoster(function (tab) {
    client.set("roster", JSON.stringify(tab));
