@@ -17,13 +17,6 @@ var client = redis.createClient(process.env.REDIS_URL);
 const {promisify} = require('util');
 const getAsync = promisify(client.get).bind(client);
 
-/**
-*   Flush all values in the redis cache
-**/
-client.flushall( function (err, succeeded) {
-    console.log(succeeded); // will be true if successfull
-});
-
 
 /**
 *   Global variable used in Gearscore calculations
@@ -128,7 +121,7 @@ var getCharInfo = async function (name, callback) {
             gearscore += parseInt(data);
             callback();
           });
-        }, 1);
+        }, 3000);
 
       }, async function (err) {
         if (err) console.log(err);
@@ -211,7 +204,7 @@ var getRoster = async function (callback) {
     });
 }
 
-/*** Roster initialization */
+/*** Roster initialization 
 client.get("roster", function (err, reply) {
     if (reply == null){
       loading = true;
@@ -220,7 +213,7 @@ client.get("roster", function (err, reply) {
         loading = false;
       });
     }
-});
+});*/
 
 
 /*** The guild roster is updated every 6 hours */
