@@ -18,6 +18,12 @@ const {promisify} = require('util');
 const getAsync = promisify(client.get).bind(client);
 
 /**
+*   Flush all values in the redis cache
+**/
+client.flushall('ASYNC', callback);
+
+
+/**
 *   Global variable used in Gearscore calculations
 **/
 
