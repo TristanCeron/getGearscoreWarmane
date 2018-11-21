@@ -12,6 +12,7 @@ var CronJob = require('cron').CronJob;
 const port = process.env.PORT || 5000;
 const guild = process.env.GUILD || "Utopie";
 const server = process.env.SERVER || "Lordaeron";
+const delay = process.env.DELAY || 1000;
 
 var client = redis.createClient(process.env.REDIS_URL);
 const {promisify} = require('util');
@@ -121,7 +122,7 @@ var getCharInfo = async function (name, callback) {
             gearscore += parseInt(data);
             callback();
           });
-        }, 3000);
+        }, delay);
 
       }, async function (err) {
         if (err) console.log(err);
