@@ -126,7 +126,7 @@ var getCharInfo = async function (name, callback) {
       }, async function (err) {
         if (err) console.log(err);
         else {
-          console.log('iterating done');
+          console.log('Iterating done : ' + response.data.name);
           
           var profession1Txt = "";
           var profession1SkillTxt = "";
@@ -217,7 +217,7 @@ client.get("roster", function (err, reply) {
 
 
 /*** The guild roster is updated every 6 hours */
-new CronJob('01 0-23/6 * * *', function () {
+new CronJob('01 0-23/4 * * *', function () {
   loading = true;
   getRoster(function (tab) {
    client.set("roster", JSON.stringify(tab));
