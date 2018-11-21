@@ -20,7 +20,9 @@ const getAsync = promisify(client.get).bind(client);
 /**
 *   Flush all values in the redis cache
 **/
-client.flushall('ASYNC', callback);
+client.flushall( function (err, succeeded) {
+    console.log(succeeded); // will be true if successfull
+});
 
 
 /**
